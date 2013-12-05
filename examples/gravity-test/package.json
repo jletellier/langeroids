@@ -1,0 +1,9 @@
+{
+    "name": "gravity-test",
+    "dependencies": {
+        "langeroids": ""
+    },
+    "scripts": {
+        "start": "beefy main.js:bundle.js --cwd app -- --noparse='box2d.js'"
+    }
+}
