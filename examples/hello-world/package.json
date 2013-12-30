@@ -1,0 +1,9 @@
+{
+    "name": "hello-world",
+    "dependencies": {
+        "langeroids": ""
+    },
+    "scripts": {
+        "start": "beefy main.js:bundle.js --cwd app"
+    }
+}
