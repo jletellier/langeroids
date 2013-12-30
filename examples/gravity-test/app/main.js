@@ -1,22 +1,21 @@
-var langeroids = require('langeroids/lib/langeroids.js');
 var _ = require('underscore');
 var Game = require('langeroids/lib/Game.js');
+var Box2dPhysics = require('langeroids/lib/Box2dPhysics.js');
+var Canvas2dRenderer = require('langeroids/lib/Canvas2dRenderer.js');
+var MainLogic = require('../lib/MainLogic.js');
 
-var GravityTestGame = function(settings) {
-    GravityTestGame.super_.apply(this, arguments);
-};
+(function() {
+    var game = new Game();
 
-langeroids.inherits(GravityTestGame, Game);
+    game.addComponent(new Box2dPhysics());
 
-_.extend(GravityTestGame.prototype, {
-    update: function() {
+    game.addComponent(new Canvas2dRenderer({
+        canvas: 'canvas',
+        width: 900,
+        height: 600
+    }));
 
-    },
+    game.addComponent(new MainLogic());
 
-    draw: function() {
-
-    }
-});
-
-var game = new GravityTestGame();
-game.start();
+    game.start();
+})();
