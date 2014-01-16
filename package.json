@@ -12,7 +12,8 @@
     },
     "dependencies": {
         "underscore": "1.5.2",
-        "box2d.js": "1.0.0"
+        "box2d.js": "1.0.0",
+        "inherits": "2.0.1"
     },
     "engine": "node >= 0.10.22"
 }
