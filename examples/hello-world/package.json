@@ -3,7 +3,13 @@
     "dependencies": {
         "langeroids": ""
     },
+    "devDependencies": {
+        "browserify": "",
+        "beefy": "",
+        "uglify-js": "1.x"
+    },
     "scripts": {
-        "start": "beefy main.js:bundle.js --cwd app"
+        "start": "beefy main.js:bundle.js --cwd app",
+        "prepublish": "browserify app/main.js | uglifyjs -c > app/bundle.js"
     }
 }

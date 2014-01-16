@@ -3,7 +3,13 @@
     "dependencies": {
         "langeroids": ""
     },
+    "devDependencies": {
+        "browserify": "",
+        "beefy": "",
+        "uglify-js": "1.x"
+    },
     "scripts": {
-        "start": "beefy main.js:bundle.js --cwd app -- --noparse='box2d.js'"
+        "start": "beefy main.js:bundle.js --cwd app -- --noparse='box2d.js'",
+        "prepublish": "browserify app/main.js | uglifyjs -c > app/bundle.js"
     }
 }
