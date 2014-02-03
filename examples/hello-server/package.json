@@ -1,0 +1,15 @@
+{
+    "name": "hello-server",
+    "dependencies": {
+        "langeroids": ""
+    },
+    "devDependencies": {
+        "browserify": "",
+        "beefy": "",
+        "uglify-js": "1.x"
+    },
+    "scripts": {
+        "start": "node server.js",
+        "prepublish": "browserify app/main.js | uglifyjs -c > app/bundle.js"
+    }
+}
