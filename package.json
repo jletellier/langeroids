@@ -12,8 +12,10 @@
     },
     "dependencies": {
         "underscore": "1.5.2",
+        "inherits": "2.0.1",
         "box2d.js": "1.0.0",
-        "inherits": "2.0.1"
+        "socket.io": "0.9.16",
+        "socket.io-client": "0.9.16"
     },
     "engine": "node >= 0.10.22"
 }
