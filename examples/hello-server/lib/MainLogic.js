@@ -1,7 +1,9 @@
-var _ = require('underscore');
+var langeroids = require('langeroids/lib/langeroids.js');
+var _ = langeroids._;
 
 var defaults = {
-    ID: 'mainLogic',
+    id: 'mainLogic',
+
     WIDTH: 450,
     HEIGHT: 300,
     PLAYER_RADIUS: 20
@@ -12,26 +14,26 @@ var MainLogic = module.exports = function(settings) {
 };
 
 _.extend(MainLogic.prototype, {
-    init: function(game) {
+    onInit: function(game) {
         this.game = game;
         this.player = [];
     },
 
-    networkSerialize: function() {
+    onNetworkSerialize: function(refSnapshot) {
         if (this.game.isServer) {
-            return {
+            refSnapshot[this.id] = {
                 player: _.clone(this.player)
             };
         }
     },
 
-    networkUnserialize: function(data) {
+    onNetworkUnserialize: function(snapshotDiff) {
         if (!this.game.isServer) {
-            _.extend(this, data);
+            _.extend(this, snapshotDiff[this.id]);
         }
     },
 
-    networkConnect: function(connectionId) {
+    onNetworkConnect: function(connectionId) {
         if (this.game.isServer) {
             var newPlayer = {
                 id: connectionId,
@@ -48,17 +50,13 @@ _.extend(MainLogic.prototype, {
         }
     },
 
-    networkDisconnect: function(connectionId) {
+    onNetworkDisconnect: function(connectionId) {
         if (this.game.isServer) {
             this.player = _.without(this.player, _.findWhere(this.player, { id: connectionId }));
         }
     },
 
-    update: function() {
-
-    },
-
-    draw: function(game, renderer) {
+    onDraw: function(renderer) {
         var ctx = renderer.ctx;
         renderer.clear();
         for (var i = 0; i < this.player.length; i++) {
