@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var langeroids = require('langeroids/lib/langeroids.js');
 var Game = require('langeroids/lib/Game.js');
 var Canvas2dRenderer = require('langeroids/lib/Canvas2dRenderer.js');
 
@@ -10,9 +10,7 @@ var Canvas2dRenderer = require('langeroids/lib/Canvas2dRenderer.js');
     }));
 
     game.addComponent({
-        init: function() {},
-        update: function() {},
-        draw: function(game, renderer) {
+        onceDraw: function(renderer) {
             renderer.clear();
             renderer.drawText(10, 15, 'Hello, World!')
         }
