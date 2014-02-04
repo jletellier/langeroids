@@ -1,4 +1,5 @@
-var _ = require('underscore');
+var langeroids = require('langeroids/lib/langeroids.js');
+var _ = langeroids._;
 var Timer = require('langeroids/lib/Timer.js');
 
 var GroundEntity = require('./GroundEntity.js');
@@ -21,8 +22,9 @@ var MainLogic = module.exports = function(settings) {
 };
 
 _.extend(MainLogic.prototype, {
-    init: function(game) {
-        game.entityManager.add(new GroundEntity());
+    onInit: function(game) {
+        this.em = game.getComponent('entityManager');
+        this.em.add(new GroundEntity());
 
         // timers for generated entities
         this.bulletColorChangeTimer = new Timer({ game: game, tDuration: this.BULLET_COLOR_CHANGE_INTERVAL });
@@ -32,7 +34,7 @@ _.extend(MainLogic.prototype, {
         this.currentBulletColor = _.random(4, this.BULLET_COLORS.length - 1);
     },
 
-    update: function(game) {
+    onUpdate: function() {
         // change bullet color
         if (this.bulletColorChangeTimer.done()) {
             this.currentBulletColor = _.random(0, this.BULLET_COLORS.length - 1);
@@ -41,7 +43,7 @@ _.extend(MainLogic.prototype, {
 
         // throw bullets
         if (this.bulletTimer.done()) {
-            game.entityManager.add(new BulletEntity({
+            this.em.add(new BulletEntity({
                 posX: -5,
                 posY: 50,
                 forceX: _.random(this.BULLET_MIN_FORCE_X, this.BULLET_MAX_FORCE_X),
@@ -52,7 +54,7 @@ _.extend(MainLogic.prototype, {
             this.bulletTimer.repeat();
         }
         if (this.bulletTimer2.done()) {
-            game.entityManager.add(new BulletEntity({
+            this.em.add(new BulletEntity({
                 posX: 305,
                 posY: 70,
                 forceX: _.random(-this.BULLET_MIN_FORCE_X, -this.BULLET_MAX_FORCE_X),
@@ -64,7 +66,7 @@ _.extend(MainLogic.prototype, {
         }
     },
 
-    draw: function(game, renderer) {
+    onDraw: function(renderer) {
         renderer.clear('rgb(0,0,0)');
     }
 });

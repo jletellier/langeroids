@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var langeroids = require('langeroids/lib/langeroids.js');
 var Game = require('langeroids/lib/Game.js');
 var Box2dPhysics = require('langeroids/lib/Box2dPhysics.js');
 var Canvas2dRenderer = require('langeroids/lib/Canvas2dRenderer.js');

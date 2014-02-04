@@ -1,6 +1,6 @@
-var _ = require('underscore');
+var langeroids = require('langeroids/lib/langeroids.js');
+var _ = langeroids._;
 var Timer = require('langeroids/lib/Timer.js');
-var Box2D = require('box2d.js').Box2D;
 
 var defaults = {
     width: 230,
@@ -18,8 +18,8 @@ var GroundEntity = module.exports = function(settings) {
 };
 
 _.extend(GroundEntity.prototype, {
-    init: function(game) {
-        this.physics = game.physics;
+    onInit: function(game) {
+        this.physics = game.getComponent('physics');
         this.shapes = [];
 
         this.createBody();
@@ -34,9 +34,9 @@ _.extend(GroundEntity.prototype, {
         this.halfWidth = this.width / 2;
         this.halfHeight = this.height / 2;
 
-        var bd = new Box2D.b2BodyDef();
-        bd.set_type(Box2D.b2_staticBody);
-        bd.set_position(new Box2D.b2Vec2((this.posX + this.halfWidth) * this.physics.b2scale, (this.posY + this.halfHeight) * this.physics.b2scale));
+        var bd = new this.physics.Box2D.b2BodyDef();
+        bd.set_type(this.physics.Box2D.b2_staticBody);
+        bd.set_position(new this.physics.Box2D.b2Vec2((this.posX + this.halfWidth) * this.physics.b2scale, (this.posY + this.halfHeight) * this.physics.b2scale));
         this.body = this.physics.world.CreateBody(bd);
 
         this.addBoxShape(-65, this.height / 2 - 5, 70, 10);
@@ -47,10 +47,10 @@ _.extend(GroundEntity.prototype, {
     },
 
     addBoxShape: function(x, y, w, h) {
-        var shape = new Box2D.b2PolygonShape();
-        shape.SetAsBox(w / 2 * this.physics.b2scale, h / 2 * this.physics.b2scale, new Box2D.b2Vec2(x * this.physics.b2scale, y * this.physics.b2scale), 0);
+        var shape = new this.physics.Box2D.b2PolygonShape();
+        shape.SetAsBox(w / 2 * this.physics.b2scale, h / 2 * this.physics.b2scale, new this.physics.Box2D.b2Vec2(x * this.physics.b2scale, y * this.physics.b2scale), 0);
 
-        var fd = new Box2D.b2FixtureDef();
+        var fd = new this.physics.Box2D.b2FixtureDef();
         fd.set_shape(shape);
         this.body.CreateFixture(fd);
 
@@ -64,11 +64,11 @@ _.extend(GroundEntity.prototype, {
     },
 
     addCircleShape: function(x, y, radius) {
-        var shape = new Box2D.b2CircleShape();
-        shape.set_m_p(new Box2D.b2Vec2(x * this.physics.b2scale, y * this.physics.b2scale));
+        var shape = new this.physics.Box2D.b2CircleShape();
+        shape.set_m_p(new this.physics.Box2D.b2Vec2(x * this.physics.b2scale, y * this.physics.b2scale));
         shape.set_m_radius(radius * this.physics.b2scale);
 
-        var fd = new Box2D.b2FixtureDef();
+        var fd = new this.physics.Box2D.b2FixtureDef();
         fd.set_shape(shape);
         this.body.CreateFixture(fd);
 
@@ -80,7 +80,7 @@ _.extend(GroundEntity.prototype, {
         });
     },
 
-    update: function() {
+    onUpdate: function() {
         if (this.colorChangeTimer.done()) {
             if (this.currentHColor == 360 || this.currentHColor == 0) this.currentHColorDirection *= -1;
             this.currentHColor += this.currentHColorDirection;
@@ -88,7 +88,7 @@ _.extend(GroundEntity.prototype, {
         }
     },
 
-    draw: function(game, renderer) {
+    onDraw: function(renderer) {
         renderer.ctx.fillStyle = 'hsla('+ this.currentHColor +',61%,56%,0.5)';
 
         for (var i = 0; i < this.shapes.length; i++) {

@@ -1,5 +1,5 @@
-var _ = require('underscore');
-var Box2D = require('box2d.js').Box2D;
+var langeroids = require('langeroids/lib/langeroids.js');
+var _ = langeroids._;
 
 var defaults = {
     radius: 4,
@@ -17,16 +17,18 @@ var BulletEntity = module.exports = function(settings) {
 };
 
 _.extend(BulletEntity.prototype, {
-    init: function(game) {
-        this.physics = game.physics;
+    onInit: function(game) {
+        this.physics = game.getComponent('physics');
         this.createBody();
 
-        this.body.ApplyForce(this.body.GetWorldVector(new Box2D.b2Vec2(this.forceX, this.forceY)), this.body.GetWorldCenter());
+        this.body.ApplyForce(this.body.GetWorldVector(new this.physics.Box2D.b2Vec2(this.forceX, this.forceY)), this.body.GetWorldCenter());
 
         return this;
     },
 
     createBody: function() {
+        var Box2D = this.physics.Box2D;
+
         // create shape
         var shape = new Box2D.b2CircleShape();
         shape.set_m_radius(this.radius * this.physics.b2scale);
@@ -50,7 +52,7 @@ _.extend(BulletEntity.prototype, {
         this.body.CreateFixture(fd);
     },
 
-    update: function() {
+    onUpdate: function() {
         var p = this.body.GetPosition();
         this.posX = p.get_x() / this.physics.b2scale - this.width / 2;
         this.posY = p.get_y() / this.physics.b2scale - this.height / 2;
@@ -64,7 +66,7 @@ _.extend(BulletEntity.prototype, {
         this.killed = true;
     },
 
-    draw: function(game, renderer) {
+    onDraw: function(renderer) {
         var ctx = renderer.ctx;
 
         // draw bullet
