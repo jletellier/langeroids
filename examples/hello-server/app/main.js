@@ -1,8 +1,8 @@
-var Game = require('langeroids/lib/Game.js');
-var Canvas2dRenderer = require('langeroids/lib/Canvas2dRenderer.js');
-var NetworkClient = require('langeroids/lib/NetworkClient.js');
+var Game = require('langeroids/lib/game.js');
+var Canvas2dRenderer = require('langeroids/lib/canvas-2d-renderer.js');
+var NetworkClient = require('langeroids/lib/network-client.js');
 
-var MainLogic = require('../lib/MainLogic.js');
+var MainLogic = require('../lib/main-logic.js');
 
 (function() {
     var game = new Game();

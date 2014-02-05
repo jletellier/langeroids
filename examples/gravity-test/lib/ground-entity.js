@@ -1,6 +1,6 @@
 var langeroids = require('langeroids/lib/langeroids.js');
 var _ = langeroids._;
-var Timer = require('langeroids/lib/Timer.js');
+var Timer = require('langeroids/lib/timer.js');
 
 var defaults = {
     width: 230,

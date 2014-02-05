@@ -1,9 +1,9 @@
 var langeroids = require('langeroids/lib/langeroids.js');
-var Game = require('langeroids/lib/Game.js');
-var Box2dPhysics = require('langeroids/lib/Box2dPhysics.js');
-var Canvas2dRenderer = require('langeroids/lib/Canvas2dRenderer.js');
-var EntityManager = require('langeroids/lib/EntityManager.js');
-var MainLogic = require('../lib/MainLogic.js');
+var Game = require('langeroids/lib/game.js');
+var Box2dPhysics = require('langeroids/lib/box-2d-physics.js');
+var Canvas2dRenderer = require('langeroids/lib/canvas-2d-renderer.js');
+var EntityManager = require('langeroids/lib/entity-manager.js');
+var MainLogic = require('../lib/main-logic.js');
 
 (function() {
     var game = new Game();

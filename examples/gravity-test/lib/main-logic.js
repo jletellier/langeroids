@@ -1,9 +1,9 @@
 var langeroids = require('langeroids/lib/langeroids.js');
 var _ = langeroids._;
-var Timer = require('langeroids/lib/Timer.js');
+var Timer = require('langeroids/lib/timer.js');
 
-var GroundEntity = require('./GroundEntity.js');
-var BulletEntity = require('./BulletEntity.js');
+var GroundEntity = require('./ground-entity.js');
+var BulletEntity = require('./bullet-entity.js');
 
 var defaults = {
     BULLET_SPAWN_INTERVAL: 1800,
