@@ -1,7 +1,7 @@
 {
     "name": "langeroids",
     "version": "0.1.0",
-    "description": "Simple game engine",
+    "description": "Simple 2D game engine",
     "author": {
         "name": "Julien Letellier",
         "email": "letellier.julien@gmail.com"

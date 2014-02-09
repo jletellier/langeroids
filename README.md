@@ -1,4 +1,4 @@
 langeroids
 ==========
 
-Simple game engine
+Simple 2D game engine
