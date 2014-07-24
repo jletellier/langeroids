@@ -1,7 +1,7 @@
 {
     "name": "langeroids",
-    "version": "0.1.0",
-    "description": "Simple 2D game engine",
+    "version": "0.2.0",
+    "description": "Simple game engine with a component-based entity system",
     "author": {
         "name": "Julien Letellier",
         "email": "letellier.julien@gmail.com"
@@ -18,5 +18,5 @@
         "socket.io": "0.9.16",
         "socket.io-client": "0.9.16"
     },
-    "engine": "node >= 0.10.22"
+    "engine": "node 0.10.x"
 }

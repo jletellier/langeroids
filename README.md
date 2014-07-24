@@ -1,4 +1,4 @@
 langeroids
 ==========
 
-Simple 2D game engine
+Simple game engine with a component-based entity system
