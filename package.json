@@ -1,7 +1,7 @@
 {
     "name": "langeroids",
     "version": "0.2.0",
-    "description": "Simple game engine with a component-based entity system",
+    "description": "Multi-purpose engine with a component-based entity system",
     "author": {
         "name": "Julien Letellier",
         "email": "letellier.julien@gmail.com"
