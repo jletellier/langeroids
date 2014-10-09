@@ -1,7 +1,7 @@
 {
     "name": "langeroids",
-    "version": "0.2.0",
-    "description": "Multi-purpose engine with a component-based entity system",
+    "version": "0.3.0",
+    "description": "Multi-purpose engine based on components and events",
     "author": {
         "name": "Julien Letellier",
         "email": "letellier.julien@gmail.com"
@@ -11,9 +11,9 @@
         "url": "https://github.com/jletellier/langeroids.git"
     },
     "dependencies": {
-        "underscore": "1.5.2",
+        "underscore": "1.7.0",
         "inherits": "2.0.1",
-        "events": "1.0.0",
+        "events": "1.0.2",
         "box2d.js": "1.0.0",
         "socket.io": "0.9.16",
         "socket.io-client": "0.9.16"

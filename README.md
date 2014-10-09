@@ -1,4 +1,4 @@
 langeroids
 ==========
 
-Multi-purpose engine with a component-based entity system
+Multi-purpose engine based on components and events
