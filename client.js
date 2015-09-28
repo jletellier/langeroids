@@ -1,8 +1,10 @@
 var langeroids = window.langeroids = require('./lib/langeroids');
-langeroids._ = window._;
 
-if (!langeroids._ || !langeroids._.extend) {
-    console.error('Langeroids requires Underscore/Lo-Dash to function properly. Please add one of the libraries *before* you add Langeroids.');
+if (!Object.assign) {
+    console.error(
+        'Langeroids requires the ECMAScript 2015 (ES6) feature "Object.assign" to function. ' +
+        'Please provide a polyfill or use a supported browser: http://browsehappy.com/'
+    );
 }
 
 langeroids.ComponentManager = require('./lib/component-manager');

@@ -1,9 +1,11 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var langeroids = window.langeroids = require('./lib/langeroids');
-langeroids._ = window._;
 
-if (!langeroids._ || !langeroids._.extend) {
-    console.error('Langeroids requires Underscore/Lo-Dash to function properly. Please add one of the libraries *before* you add Langeroids.');
+if (!Object.assign) {
+    console.error(
+        'Langeroids requires the ECMAScript 2015 (ES6) feature "Object.assign" to function. ' +
+        'Please provide a polyfill or use a supported browser: http://browsehappy.com/'
+    );
 }
 
 langeroids.ComponentManager = require('./lib/component-manager');
@@ -11,9 +13,10 @@ langeroids.EntityManager = require('./lib/entity-manager');
 langeroids.EventLogger = require('./lib/event-logger');
 langeroids.AnimationLoop = require('./lib/animation-loop');
 langeroids.Timer = require('./lib/timer');
+
 },{"./lib/animation-loop":2,"./lib/component-manager":3,"./lib/entity-manager":4,"./lib/event-logger":5,"./lib/langeroids":6,"./lib/timer":7}],2:[function(require,module,exports){
-var langeroids = require('./langeroids');
-var _ = langeroids._;
+'use strict';
+
 var Timer = require('./timer');
 
 var defaults = {
@@ -23,11 +26,11 @@ var defaults = {
     elapsed: 0
 };
 
-var AnimationLoop = module.exports = function(settings) {
-    _.extend(this, defaults, settings);
+var AnimationLoop = function(settings) {
+    Object.assign(this, defaults, settings);
 };
 
-_.extend(AnimationLoop.prototype, {
+Object.assign(AnimationLoop.prototype, {
     start: function() {
         this.startLoop();
     },
@@ -60,17 +63,21 @@ _.extend(AnimationLoop.prototype, {
         return new Timer(settings, this);
     }
 });
-},{"./langeroids":6,"./timer":7}],3:[function(require,module,exports){
+
+module.exports = AnimationLoop;
+
+},{"./timer":7}],3:[function(require,module,exports){
+'use strict';
+
 var langeroids = require('./langeroids');
-var _ = langeroids._;
 
 var defaults = {
     id: 'component-manager',
     initialized: false
 };
 
-var ComponentManager = module.exports = function(settings) {
-    _.extend(this, defaults, settings);
+var ComponentManager = function(settings) {
+    Object.assign(this, defaults, settings);
 
     this.setMaxListeners(0);
     this.components = [];
@@ -81,13 +88,13 @@ var ComponentManager = module.exports = function(settings) {
 langeroids.inherits(ComponentManager, langeroids.EventEmitter);
 var Parent = ComponentManager.super_;
 
-_.extend(ComponentManager.prototype, {
+Object.assign(ComponentManager.prototype, {
     emit: function(type, args, transferables, callerId) {
         Parent.prototype.emit.apply(this, [ type, args, callerId ]);
 
         // emit to workers
-        if (!_.isArray(transferables)) transferables = [];
-        var workerArgs = args;
+        if (!langeroids.isArray(transferables)) transferables = [];
+        var workerArgs = args || [];
         for (var i = 0; i < this.workers.length; i++) {
             var worker = this.workers[i];
             if (worker._listeners[type] === true) {
@@ -121,7 +128,7 @@ _.extend(ComponentManager.prototype, {
         this.setComponentMethods(component);
 
         this.components.push(component);
-        if (_.isString(component.id)) this.componentsMap[component.id] = component;
+        if (langeroids.isString(component.id)) this.componentsMap[component.id] = component;
 
         if (component.useConcurrency) {
             this.createWorker(component);
@@ -143,11 +150,12 @@ _.extend(ComponentManager.prototype, {
     },
 
     sort: function() {
-        this.components = _.sortBy(this.components, 'sortIndex');
+        // TODO: Fix sorting
+        //this.components = _.sortBy(this.components, 'sortIndex');
     },
 
     getById: function(component) {
-        if (_.isString(component)) {
+        if (langeroids.isString(component)) {
             return this.componentsMap[component];
         }
         return false;
@@ -158,13 +166,13 @@ _.extend(ComponentManager.prototype, {
     },
 
     createWorker: function(component) {
-        component = (_.isString(component)) ? this.componentsMap[component] : component;
+        component = (langeroids.isString(component)) ? this.componentsMap[component] : component;
 
         // convert component members (properties, functions) to strings
         var prototypeStr = 'Class.prototype.';
         var members = [];
-        _.each(_.keys(component), function(value) {
-            if (_.isFunction(component[value])) {
+        Object.keys(component).forEach(function(value) {
+            if (typeof component[value] === 'function') {
                 members.push(prototypeStr + value + '=' + component[value].toString());
             }
             else {
@@ -204,6 +212,9 @@ _.extend(ComponentManager.prototype, {
         URL.revokeObjectURL(blobURL);
     }
 });
+
+module.exports = ComponentManager;
+
 },{"./langeroids":6}],4:[function(require,module,exports){
 var langeroids = require('./langeroids');
 var _ = langeroids._;
@@ -298,115 +309,88 @@ _.extend(EventLogger.prototype, {
 });
 },{"./langeroids":6}],6:[function(require,module,exports){
 (function (global){
+'use strict';
+
+/*
+ * Warning: On older browsers the following methods might need a polyfill:
+ * - Object.assign
+ * - Object.keys
+ * - Array.prototype.forEach
+ */
+
 // Set root to the global context (window in the browser)
 var root = global;
 
 // This is just for convenience
-exports = module.exports = {
-    _: {},
+var langeroids = {
     inherits: require('inherits'),
     EventEmitter: require('events').EventEmitter,
 
     browser: (typeof window !== 'undefined' && root === window)
 };
 
-// Parse the user agent in the browser
-if (exports.browser) {
-    var ua = navigator.userAgent.toLowerCase();
-    var device = {
-        iphone: /iphone/.test(ua),
-        ipod: /ipod/.test(ua),
-        ipad: /ipad/.test(ua),
-        android: /android/.test(ua),
-        blackberry: /blackberry/.test(ua),
-        nexus7: /nexus 7/.test(ua),
-        windowsPhone: /windows phone/.test(ua)
-    };
-    device.ios = device.iphone || device.ipod || device.ipad;
-    device.mobile = device.ios || device.android || device.blackberry || device.windowsPhone;
-    exports.device = device;
-}
+langeroids.isArray = function(obj) {
+    return (Object.prototype.toString.call(obj) === '[object Array]');
+};
 
-// Polyfill for requestAnimationFrame in the browser
-// Copied from http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
-(function() {
-    var lastTime = 0;
-    if (exports.browser) {
-        var vendors = ['webkit', 'moz'];
-        for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-            window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
-            window.cancelAnimationFrame =
-                window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
-        }
-    }
+langeroids.isString = function(obj) {
+    return (typeof obj === 'string' || obj instanceof String);
+};
 
-    if (!root.requestAnimationFrame)
-        root.requestAnimationFrame = function(callback, element) {
-            var currTime = new Date().getTime();
-            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-            var id = root.setTimeout(function() { callback(currTime + timeToCall); },
-                timeToCall);
-            lastTime = currTime + timeToCall;
-            return id;
-        };
-
-    if (!root.cancelAnimationFrame)
-        root.cancelAnimationFrame = function(id) {
-            clearTimeout(id);
-        };
-}());
-
-exports.createComponent = function(defaults, proto, stat, constructor, Parent) {
-    var _ = exports._;
-    var hasParent = _.isFunction(Parent);
-    var Component = _.isFunction(constructor) ?
+langeroids.createComponent = function(defaults, proto, stat, constructor, Parent) {
+    var hasParent = typeof Parent === 'function';
+    var Component = (typeof constructor === 'function') ?
         constructor :
         function(settings) {
             if (hasParent) Parent.call(this, settings);
-            _.assign(this, defaults, settings);
+            Object.assign(this, defaults, settings);
         };
-    if (hasParent) exports.inherits(Component, Parent);
-    _.assign(Component.prototype, proto);
-    _.assign(Component, stat);
+    if (hasParent) langeroids.inherits(Component, Parent);
+    Object.assign(Component.prototype, proto);
+    Object.assign(Component, stat);
     return Component;
 };
 
-exports.findComponentListeners = function(component) {
-    var _ = exports._;
+langeroids.findComponentListeners = function(component) {
     var listeners = component._listeners = {};
     var onceListeners = component._onceListeners = {};
-    _.forEach(_.functions(component), function(value) {
-        if (value.indexOf('on', 0) === 0) {
-            var once = (value.indexOf('once', 0) === 0);
-            var type = value.substr(once ? 4 : 2);
-            if (type.length > 0) {
-                type = type.substr(0, 1).toLowerCase() + type.substr(1);
-                listeners[type] = true;
-                if (once) onceListeners[type] = true;
+
+    for (var value in component) {
+        if (typeof component[value] === 'function') {
+            if (value.indexOf('on', 0) === 0) {
+                var once = (value.indexOf('once', 0) === 0);
+                var type = value.substr(once ? 4 : 2);
+                if (type.length > 0) {
+                    type = type.substr(0, 1).toLowerCase() + type.substr(1);
+                    listeners[type] = true;
+                    if (once) onceListeners[type] = true;
+                }
             }
         }
-    });
+    }
 };
 
-exports.setComponentListeners = function(parent, component, force) {
-    var _ = exports._;
+langeroids.setComponentListeners = function(parent, component, force) {
     var listeners = component._listeners;
     var onceListeners = component._onceListeners;
-    _.forEach(listeners, function(value, key) {
-        if ((force && value) || value === true) {
-            var fnPrefix = onceListeners[key] ? 'once' : 'on';
-            var fnName = fnPrefix + key.substr(0, 1).toUpperCase() + key.substr(1);
-            var boundListener = component[fnName].bind(component);
-            listeners[key] = boundListener;
-            parent[fnPrefix](key, boundListener);
+
+    for (var key in listeners) {
+        if (listeners.hasOwnProperty(key)) {
+            var value = listeners[key];
+            if ((force && value) || value === true) {
+                var fnPrefix = onceListeners[key] ? 'once' : 'on';
+                var fnName = fnPrefix + key.substr(0, 1).toUpperCase() + key.substr(1);
+                var boundListener = component[fnName].bind(component);
+                listeners[key] = boundListener;
+                parent[fnPrefix](key, boundListener);
+            }
         }
-    });
+    }
 };
 
-exports.removeComponentListeners = function(parent, component, types) {
-    var _ = exports._;
+langeroids.removeComponentListeners = function(parent, component, types) {
     var listeners = component._listeners;
-    types = types || _.keys(component._listeners);
+    types = types || Object.keys(component._listeners);
     for (var i = 0; i < types.length; i++) {
         var type = types[i];
         if (listeners[type]) {
@@ -415,10 +399,12 @@ exports.removeComponentListeners = function(parent, component, types) {
         }
     }
 };
+
+module.exports = langeroids;
+
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"events":8,"inherits":9}],7:[function(require,module,exports){
-var langeroids = require('./langeroids');
-var _ = langeroids._;
+'use strict';
 
 var defaults = {
     animationLoop: null,
@@ -426,15 +412,15 @@ var defaults = {
     tDuration: 0
 };
 
-var Timer = module.exports = function(settings, animationLoop) {
-    _.extend(this, defaults);
-    if (!_.isUndefined(animationLoop)) this.animationLoop = animationLoop;
+var Timer = function(settings, animationLoop) {
+    Object.assign(this, defaults);
+    if (animationLoop !== undefined) this.animationLoop = animationLoop;
 
-    if (_.isObject(settings)) _.extend(this, settings);
-    else if (_.isNumber(settings)) this.set(settings);
+    if (!isNaN(settings)) this.set(settings);
+    else Object.assign(this, settings);
 };
 
-_.extend(Timer.prototype, {
+Object.assign(Timer.prototype, {
     set: function(duration) {
         this.tStart = this.animationLoop.time;
         this.tDuration = duration || this.tDuration;
@@ -454,7 +440,10 @@ _.extend(Timer.prototype, {
         return done;
     }
 });
-},{"./langeroids":6}],8:[function(require,module,exports){
+
+module.exports = Timer;
+
+},{}],8:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
