@@ -1,4 +1,4 @@
-var langeroids = window.langeroids = require('./lib/langeroids');
+let langeroids = window.langeroids = require('./lib/langeroids');
 
 if (!Object.assign) {
     console.error(

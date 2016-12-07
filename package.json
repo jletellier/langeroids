@@ -1,6 +1,6 @@
 {
     "name": "langeroids",
-    "version": "0.5.0",
+    "version": "0.6.0",
     "description": "Multi-purpose engine based on components and events",
     "license": "MIT",
     "author": {
@@ -23,6 +23,6 @@
     },
     "main": "index",
     "engines": {
-        "node": ">=0.12"
+        "node": ">=6"
     }
 }
